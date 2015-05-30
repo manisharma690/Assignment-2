@@ -150,5 +150,20 @@ public class OrderQueueTest {
         assertTrue(Math.abs(result - expResult) < 1000);
     }
 
+        @Test
+    public void testProcessWhenTimeReceivedNotSetThenThrowException() {
+        boolean didThrow = false;
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("SomeValues", "OtherValues");
+        order.addPurchase(new Purchase(1, 8));
+
+        try {
+            orderQueue.process(order);
+        } catch (OrderQueue.NoTimeReceivedException ex) {
+            didThrow = true;
+        }
+
+        assertTrue(didThrow);
+    }
     
 }
