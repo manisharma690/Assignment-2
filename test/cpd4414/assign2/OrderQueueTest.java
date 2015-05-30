@@ -97,5 +97,19 @@ public class OrderQueueTest {
 
         assertTrue(didThrow);
     }
+        @Test
+    public void testWhenNoPurchasesThenThrowAnException() throws OrderQueue.NoCustomerException {
+        boolean didThrow = false;
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("SomeNormal", "Order");
+        try {
+            orderQueue.add(order);
+        } catch (OrderQueue.NoPurchasesException ex) {
+            didThrow = true;
+        }
+
+        assertTrue(didThrow);
+    }
+
     
 }
