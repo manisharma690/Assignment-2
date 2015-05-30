@@ -110,6 +110,45 @@ public class OrderQueueTest {
 
         assertTrue(didThrow);
     }
+    @Test
+    public void testGetNextWhenOrdersInSystemThenGetNextAvailable() throws OrderQueue.NoCustomerException, OrderQueue.NoPurchasesException {
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("SomeValues", "OtherValues");
+        order.addPurchase(new Purchase(1, 8));
+        orderQueue.add(order);
+        Order order2 = new Order("SomeValues", "OtherValues");
+        order2.addPurchase(new Purchase(2, 4));
+        orderQueue.add(order2);
+
+        Order result = orderQueue.next();
+        assertEquals(result, order);
+        assertNull(result.getTimeProcessed());
+    }
+       @Test
+    public void testGetNextWhenNoOrdersInSystemThenReturnNull() throws OrderQueue.NoCustomerException, OrderQueue.NoPurchasesException {
+        OrderQueue orderQueue = new OrderQueue();
+
+        Order result = orderQueue.next();
+        assertNull(result);
+    }
+
+    @Test
+    public void testProcessWhenTimeReceivedIsSetThenSetTimeProcessedToNow() throws OrderQueue.NoCustomerException, OrderQueue.NoPurchasesException, OrderQueue.NoTimeReceivedException {
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("SomeValues", "OtherValues");
+        order.addPurchase(new Purchase(1, 8));
+        orderQueue.add(order);
+        Order order2 = new Order("SomeValues", "OtherValues");
+        order2.addPurchase(new Purchase(2, 4));
+        orderQueue.add(order2);
+
+        Order next = orderQueue.next();
+        orderQueue.process(next);
+
+        long expResult = new Date().getTime();
+        long result = next.getTimeProcessed().getTime();
+        assertTrue(Math.abs(result - expResult) < 1000);
+    }
 
     
 }
